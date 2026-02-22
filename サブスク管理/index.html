@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SubManager | サブスク・固定費管理</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts for modern typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- ヘッダー -->
+        <header class="header">
+            <h1>SubManager</h1>
+            <div class="header-actions">
+                <button class="icon-btn" id="settingsBtn" title="カテゴリ設定"><i class="fas fa-cog"></i></button>
+                <button class="add-btn" id="addBtn"><i class="fas fa-plus"></i> 追加</button>
+            </div>
+        </header>
+
+        <!-- メインコンテンツ -->
+        <main class="main-content">
+            <!-- ダッシュボード (合計金額表示) -->
+            <section class="dashboard card glassmorphism">
+                <div class="dashboard-header">
+                    <h2>固定費の合計</h2>
+                    <!-- 表示切り替えタブ -->
+                    <div class="toggle-switch">
+                        <button class="toggle-btn active" id="tabMonthly">月額</button>
+                        <button class="toggle-btn" id="tabYearly">年額</button>
+                    </div>
+                </div>
+
+                <!-- 月額表示エリア -->
+                <div id="monthlyView">
+                    <div class="total-amount">
+                        <span class="currency">¥</span><span id="monthlyTotal">0</span><span
+                            class="currency-suffix">/月</span>
+                    </div>
+                    <p class="yearly-estimate">年間予想: <span id="yearlyEstimateFromMonthly">¥0</span></p>
+                </div>
+
+                <!-- 年額表示エリア（初期非表示） -->
+                <div id="yearlyView" style="display: none;">
+                    <div class="total-amount">
+                        <span class="currency">¥</span><span id="yearlyTotal">0</span><span
+                            class="currency-suffix">/年</span>
+                    </div>
+                    <p class="yearly-estimate">月換算: <span id="monthlyEstimateFromYearly">¥0</span></p>
+                </div>
+                <div class="ad-banner-placeholder">
+                    <span>💡 【PR】通信費を見直して年間3万円節約しませんか？ ></span>
+                </div>
+            </section>
+
+            <!-- サブスクリプション一覧 -->
+            <section class="subscriptions-list" id="subList">
+                <!-- JavaScriptでここにカードが追加されます -->
+                <div class="empty-state" id="emptyState">
+                    <i class="fas fa-box-open"></i>
+                    <p>管理しているサブスクはありません。<br>右上の「追加」ボタンから登録してください。</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- 追加/編集モーダル -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal card glassmorphism">
+            <div class="modal-header">
+                <h2 id="modalTitle">サブスクを追加</h2>
+                <button class="close-btn" id="closeBtn"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="subForm" class="sub-form">
+                <div class="form-group">
+                    <label for="subName">サービス名</label>
+                    <input type="text" id="subName" placeholder="例: Netflix, Amazon Prime" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="subPrice">金額</label>
+                    <div class="price-input">
+                        <span>¥</span>
+                        <input type="number" id="subPrice" placeholder="1000" min="0" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="subCycle">支払いサイクル</label>
+                    <select id="subCycle">
+                        <option value="monthly">月額</option>
+                        <option value="yearly">年額</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="subNextDate">次回の支払日</label>
+                    <input type="date" id="subNextDate" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="subCategory">カテゴリ</label>
+                    <select id="subCategory" required>
+                        <!-- JavaScriptで動的に追加されます -->
+                    </select>
+                </div>
+
+                <button type="submit" class="submit-btn">保存する</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- カテゴリ設定モーダル -->
+    <div class="modal-overlay" id="categoryModalOverlay">
+        <div class="modal card glassmorphism">
+            <div class="modal-header">
+                <h2>カテゴリの管理</h2>
+                <button class="close-btn" id="categoryCloseBtn"><i class="fas fa-times"></i></button>
+            </div>
+
+            <div class="category-manager">
+                <!-- カテゴリ追加フォーム -->
+                <form id="categoryAddForm" class="category-add-form group">
+                    <input type="text" id="newCategoryName" placeholder="新しいカテゴリ名" required
+                        style="margin-bottom: 10px;">
+                    <button type="submit" class="submit-btn" style="margin-top: 0; padding: 10px;">追加</button>
+                </form>
+
+                <!-- 現在のカテゴリリスト -->
+                <div class="category-list-container">
+                    <p style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 15px; margin-bottom: 5px;">
+                        登録済みのカテゴリ</p>
+                    <ul class="settings-category-list" id="settingsCategoryList">
+                        <!-- JSで動的に追加 -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- サブスク編集モーダル -->
+    <div class="modal-overlay" id="editModalOverlay">
+        <div class="modal card glassmorphism">
+            <div class="modal-header">
+                <h2>サブスクを編集</h2>
+                <button class="close-btn" id="editCloseBtn"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="editForm" class="sub-form">
+                <input type="hidden" id="editSubId">
+                <div class="form-group">
+                    <label for="editSubName">サービス名</label>
+                    <input type="text" id="editSubName" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="editSubPrice">金額</label>
+                    <div class="price-input">
+                        <span>¥</span>
+                        <input type="number" id="editSubPrice" min="0" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="editSubCycle">支払いサイクル</label>
+                    <select id="editSubCycle">
+                        <option value="monthly">月額</option>
+                        <option value="yearly">年額</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="editSubNextDate">次回の支払日</label>
+                    <input type="date" id="editSubNextDate" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="editSubCategory">カテゴリ</label>
+                    <select id="editSubCategory" required>
+                        <!-- JavaScriptで動的に追加されます -->
+                    </select>
+                </div>
+
+                <button type="submit" class="submit-btn">更新する</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- コンファーム（確認）用オリジナルモーダル -->
+    <div class="modal-overlay" id="confirmModalOverlay" style="z-index: 2000;">
+        <div class="modal card glassmorphism" style="max-width: 320px; text-align: center;">
+            <div class="modal-header" style="justify-content: center; margin-bottom: 10px;">
+                <h2 id="confirmTitle" style="font-size: 1.2rem;">確認</h2>
+            </div>
+            <div style="margin-bottom: 20px;">
+                <p id="confirmMessage" style="color: var(--text-secondary); font-size: 0.95rem;"></p>
+            </div>
+            <div style="display: flex; gap: 10px; justify-content: center;">
+                <button id="confirmCancelBtn" class="submit-btn"
+                    style="background-color: transparent; border: 1px solid var(--glass-border); margin-top: 0;">キャンセル</button>
+                <button id="confirmOkBtn" class="submit-btn" style="margin-top: 0;">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
