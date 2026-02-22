@@ -5,16 +5,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SubManager | サブスク・固定費管理</title>
+    <!-- OGP設定: SNS等でシェアされた際に表示される情報を設定 -->
+    <meta property="og:title" content="SubManager | サブスク・固定費管理">
+    <meta property="og:description" content="毎月のサブスクリプションや固定費をスマートに管理。無駄な出費を見直すためのサポートツール！">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://saltyyy19.github.io/nichijo-hack-apps/サブスク管理/">
+    <meta property="og:image" content="https://dummyimage.com/1200x630/6c5ce7/ffffff.png&text=SubManager">
+    <meta name="twitter:card" content="summary_large_image">
     <link rel="stylesheet" href="style.css">
-    <!-- Google Fonts for modern typography -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body>
     <div class="app-container">
-        <!-- ヘッダー -->
         <header class="header">
             <h1>SubManager</h1>
             <div class="header-actions">
@@ -22,21 +26,15 @@
                 <button class="add-btn" id="addBtn"><i class="fas fa-plus"></i> 追加</button>
             </div>
         </header>
-
-        <!-- メインコンテンツ -->
         <main class="main-content">
-            <!-- ダッシュボード (合計金額表示) -->
             <section class="dashboard card glassmorphism">
                 <div class="dashboard-header">
                     <h2>固定費の合計</h2>
-                    <!-- 表示切り替えタブ -->
                     <div class="toggle-switch">
                         <button class="toggle-btn active" id="tabMonthly">月額</button>
                         <button class="toggle-btn" id="tabYearly">年額</button>
                     </div>
                 </div>
-
-                <!-- 月額表示エリア -->
                 <div id="monthlyView">
                     <div class="total-amount">
                         <span class="currency">¥</span><span id="monthlyTotal">0</span><span
@@ -44,8 +42,6 @@
                     </div>
                     <p class="yearly-estimate">年間予想: <span id="yearlyEstimateFromMonthly">¥0</span></p>
                 </div>
-
-                <!-- 年額表示エリア（初期非表示） -->
                 <div id="yearlyView" style="display: none;">
                     <div class="total-amount">
                         <span class="currency">¥</span><span id="yearlyTotal">0</span><span
@@ -53,14 +49,12 @@
                     </div>
                     <p class="yearly-estimate">月換算: <span id="monthlyEstimateFromYearly">¥0</span></p>
                 </div>
-                <div class="ad-banner-placeholder">
+                <div class="ad-banner-placeholder" id="a8-ad-area">
+                    <!-- 💡 A8.netで取得した広告タグを、以下のspanタグと入れ替える形で貼り付けてください -->
                     <span>💡 【PR】通信費を見直して年間3万円節約しませんか？ ></span>
                 </div>
             </section>
-
-            <!-- サブスクリプション一覧 -->
             <section class="subscriptions-list" id="subList">
-                <!-- JavaScriptでここにカードが追加されます -->
                 <div class="empty-state" id="emptyState">
                     <i class="fas fa-box-open"></i>
                     <p>管理しているサブスクはありません。<br>右上の「追加」ボタンから登録してください。</p>
@@ -68,8 +62,6 @@
             </section>
         </main>
     </div>
-
-    <!-- 追加/編集モーダル -->
     <div class="modal-overlay" id="modalOverlay">
         <div class="modal card glassmorphism">
             <div class="modal-header">
@@ -106,7 +98,6 @@
                 <div class="form-group">
                     <label for="subCategory">カテゴリ</label>
                     <select id="subCategory" required>
-                        <!-- JavaScriptで動的に追加されます -->
                     </select>
                 </div>
 
@@ -114,8 +105,6 @@
             </form>
         </div>
     </div>
-
-    <!-- カテゴリ設定モーダル -->
     <div class="modal-overlay" id="categoryModalOverlay">
         <div class="modal card glassmorphism">
             <div class="modal-header">
@@ -124,26 +113,20 @@
             </div>
 
             <div class="category-manager">
-                <!-- カテゴリ追加フォーム -->
                 <form id="categoryAddForm" class="category-add-form group">
                     <input type="text" id="newCategoryName" placeholder="新しいカテゴリ名" required
                         style="margin-bottom: 10px;">
                     <button type="submit" class="submit-btn" style="margin-top: 0; padding: 10px;">追加</button>
                 </form>
-
-                <!-- 現在のカテゴリリスト -->
                 <div class="category-list-container">
                     <p style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 15px; margin-bottom: 5px;">
                         登録済みのカテゴリ</p>
                     <ul class="settings-category-list" id="settingsCategoryList">
-                        <!-- JSで動的に追加 -->
                     </ul>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- サブスク編集モーダル -->
     <div class="modal-overlay" id="editModalOverlay">
         <div class="modal card glassmorphism">
             <div class="modal-header">
@@ -181,7 +164,6 @@
                 <div class="form-group">
                     <label for="editSubCategory">カテゴリ</label>
                     <select id="editSubCategory" required>
-                        <!-- JavaScriptで動的に追加されます -->
                     </select>
                 </div>
 
@@ -189,8 +171,6 @@
             </form>
         </div>
     </div>
-
-    <!-- コンファーム（確認）用オリジナルモーダル -->
     <div class="modal-overlay" id="confirmModalOverlay" style="z-index: 2000;">
         <div class="modal card glassmorphism" style="max-width: 320px; text-align: center;">
             <div class="modal-header" style="justify-content: center; margin-bottom: 10px;">

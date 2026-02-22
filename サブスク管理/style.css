@@ -1,4 +1,4 @@
-/* CSS Reset & Basic Setup */
+
 * {
     margin: 0;
     padding: 0;
@@ -15,8 +15,6 @@
     --danger-color: #ff7675;
     --success-color: #00b894;
     --glass-border: rgba(255, 255, 255, 0.1);
-
-    /* Category Colors */
     --cat-ent: #fdcb6e;
     --cat-util: #74b9ff;
     --cat-soft: #a29bfe;
@@ -28,12 +26,9 @@ body {
     background-color: var(--bg-color);
     color: var(--text-primary);
     line-height: 1.6;
-    /* ダークモードでよく使われる背景グラデーション */
     background: linear-gradient(135deg, #121212 0%, #1a1a2e 100%);
     min-height: 100vh;
 }
-
-/* Glassmorphism Utility */
 .glassmorphism {
     background: var(--card-bg);
     backdrop-filter: blur(10px);
@@ -47,15 +42,11 @@ body {
     padding: 20px;
     margin-bottom: 20px;
 }
-
-/* Layout */
 .app-container {
     max-width: 600px;
     margin: 0 auto;
     padding: 20px;
 }
-
-/* Header */
 .header {
     display: flex;
     justify-content: space-between;
@@ -125,8 +116,6 @@ button {
 .add-btn:active {
     transform: translateY(0);
 }
-
-/* Dashboard */
 .dashboard-header {
     display: flex;
     justify-content: space-between;
@@ -139,8 +128,6 @@ button {
     color: var(--text-secondary);
     font-weight: 500;
 }
-
-/* Toggle Switch */
 .toggle-switch {
     display: flex;
     background: rgba(0, 0, 0, 0.3);
@@ -190,8 +177,6 @@ button {
     color: var(--text-secondary);
     margin-bottom: 20px;
 }
-
-/* アフィリエイト用バナー領域 */
 .ad-banner-placeholder {
     background: rgba(108, 92, 231, 0.15);
     border: 1px dashed var(--accent-color);
@@ -202,8 +187,6 @@ button {
     color: var(--text-primary);
     cursor: pointer;
 }
-
-/* Empty State */
 .empty-state {
     text-align: center;
     padding: 40px 20px;
@@ -215,8 +198,6 @@ button {
     margin-bottom: 15px;
     opacity: 0.5;
 }
-
-/* Modal */
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -266,8 +247,6 @@ button {
 .close-btn:hover {
     color: var(--text-primary);
 }
-
-/* Form Styles */
 .form-group {
     margin-bottom: 15px;
 }
@@ -296,8 +275,6 @@ select:focus {
     outline: none;
     border-color: var(--accent-color);
 }
-
-/* ダークモード時のカレンダーアイコンを見やすく（白く）反転 */
 input[type="date"]::-webkit-calendar-picker-indicator {
     filter: invert(1);
     cursor: pointer;
@@ -329,8 +306,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .submit-btn:hover {
     background-color: var(--accent-hover);
 }
-
-/* Subscription List items (added via JS later) */
 .sub-item {
     display: flex;
     justify-content: space-between;
@@ -362,7 +337,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     align-items: center;
     font-size: 1.2rem;
     color: #333;
-    /* Icon child sets background */
 }
 
 .sub-details h3 {
@@ -389,8 +363,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     color: var(--text-secondary);
     margin-top: 2px;
 }
-
-/* Card Actions (Edit, Delete, Complete) */
 .sub-actions {
     display: flex;
     gap: 10px;
@@ -431,8 +403,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     background: rgba(0, 184, 148, 0.2);
     color: #55efc4;
 }
-
-/* 警告色クラス（JSで付与） */
 .warning-text {
     color: var(--danger-color);
     font-weight: 600;
@@ -442,8 +412,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     border-color: rgba(255, 118, 117, 0.5);
     background: rgba(255, 118, 117, 0.05);
 }
-
-/* Category Settings */
 .settings-category-list {
     list-style: none;
     max-height: 200px;
