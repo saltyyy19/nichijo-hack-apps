@@ -1,6 +1,7 @@
 
 let subscriptions = [];
-const STORAGE_KEY = 'subManager_data';
+const STORAGE_KEY = 'subManager_data';
+
 const CAT_STORAGE_KEY = 'subManager_categories';
 const defaultCategories = [
     { id: 'entertainment', name: 'エンタメ(動画/音楽)', icon: 'fa-film', bgColor: 'var(--cat-ent)' },
@@ -8,8 +9,10 @@ const defaultCategories = [
     { id: 'software', name: 'ソフトウェア/ツール', icon: 'fa-laptop-code', bgColor: 'var(--cat-soft)' },
     { id: 'other', name: 'その他', icon: 'fa-box', bgColor: 'var(--cat-other)' }
 ];
-let categories = [...defaultCategories];
-const catColors = ['var(--cat-ent)', 'var(--cat-util)', 'var(--cat-soft)', 'var(--cat-other)', '#ff9ff3', '#feca57', '#ff6b6b', '#48dbfb'];
+let categories = [...defaultCategories];
+
+const catColors = ['var(--cat-ent)', 'var(--cat-util)', 'var(--cat-soft)', 'var(--cat-other)', '#ff9ff3', '#feca57', '#ff6b6b', '#48dbfb'];
+
 const addBtn = document.getElementById('addBtn');
 const modalOverlay = document.getElementById('modalOverlay');
 const closeBtn = document.getElementById('closeBtn');
@@ -17,7 +20,8 @@ const subForm = document.getElementById('subForm');
 const subList = document.getElementById('subList');
 const emptyState = document.getElementById('emptyState');
 const monthlyTotalEl = document.getElementById('monthlyTotal');
-const yearlyTotalEl = document.getElementById('yearlyTotal');
+const yearlyTotalEl = document.getElementById('yearlyTotal');
+
 const tabMonthly = document.getElementById('tabMonthly');
 const tabYearly = document.getElementById('tabYearly');
 const monthlyView = document.getElementById('monthlyView');
@@ -25,38 +29,66 @@ const yearlyView = document.getElementById('yearlyView');
 const yearlyEstimateFromMonthly = document.getElementById('yearlyEstimateFromMonthly');
 const monthlyEstimateFromYearly = document.getElementById('monthlyEstimateFromYearly');
 
-let currentViewMode = 'monthly'; // 'monthly' or 'yearly'
+let currentViewMode = 'monthly'; // 'monthly' or 'yearly'
+
 const settingsBtn = document.getElementById('settingsBtn');
 const categoryModalOverlay = document.getElementById('categoryModalOverlay');
 const categoryCloseBtn = document.getElementById('categoryCloseBtn');
 const categoryAddForm = document.getElementById('categoryAddForm');
 const settingsCategoryList = document.getElementById('settingsCategoryList');
-const subCategorySelect = document.getElementById('subCategory');
+const subCategorySelect = document.getElementById('subCategory');
+
 const editModalOverlay = document.getElementById('editModalOverlay');
 const editCloseBtn = document.getElementById('editCloseBtn');
 const editForm = document.getElementById('editForm');
-const editSubCategorySelect = document.getElementById('editSubCategory');
+const editSubCategorySelect = document.getElementById('editSubCategory');
+
 const confirmModalOverlay = document.getElementById('confirmModalOverlay');
 const confirmTitle = document.getElementById('confirmTitle');
 const confirmMessage = document.getElementById('confirmMessage');
 const confirmCancelBtn = document.getElementById('confirmCancelBtn');
-const confirmOkBtn = document.getElementById('confirmOkBtn');
+const confirmOkBtn = document.getElementById('confirmOkBtn');
+
+// 広告タグのリスト（A8.netのテキスト広告などを追加）
+const adTags = [
+    // 1. REN SIM
+    `<a href="https://px.a8.net/svt/ejp?a8mat=4AXH8G+4IJCXE+57X0+HV7V6" rel="nofollow" style="color:var(--accent-color); font-weight:bold; text-decoration:none;">💡【PR】契約不要・１ヶ月からOK・SIMカード専門のレンタルサービス【REN SIM-レンシム-】</a>
+     <img border="0" width="1" height="1" src="https://www14.a8.net/0.gif?a8mat=4AXH8G+4IJCXE+57X0+HV7V6" alt="">`,
+    // 2. BIGLOBE光
+    `<a href="https://px.a8.net/svt/ejp?a8mat=4AXH8G+4KBNQQ+3SPO+7LVLZM" rel="nofollow" style="color:var(--accent-color); font-weight:bold; text-decoration:none;">💡【PR】最大40,000円還元キャンペーン実施中！【BIGLOBE光】</a>
+     <img border="0" width="1" height="1" src="https://www18.a8.net/0.gif?a8mat=4AXH8G+4KBNQQ+3SPO+7LVLZM" alt="">`
+];
+
+// ランダムに広告を表示する関数
+function initializeAdRotation() {
+    const adArea = document.getElementById('a8-ad-area');
+    if (!adArea) return;
+
+    // ランダムな広告を1つ選択
+    const randomIndex = Math.floor(Math.random() * adTags.length);
+    adArea.innerHTML = adTags[randomIndex];
+}
+
 function init() {
     loadCategories();
     loadData();
     renderCategorySelect();
     renderList();
     updateDashboard();
-}
+    initializeAdRotation(); // 初期化時に広告をランダムで表示
+}
+
 function loadData() {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
         subscriptions = JSON.parse(saved);
     }
-}
+}
+
 function saveData() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(subscriptions));
-}
+}
+
 function loadCategories() {
     const savedCats = localStorage.getItem(CAT_STORAGE_KEY);
     if (savedCats) {
@@ -68,7 +100,8 @@ function loadCategories() {
 
 function saveCategories() {
     localStorage.setItem(CAT_STORAGE_KEY, JSON.stringify(categories));
-}
+}
+
 addBtn.addEventListener('click', () => {
     subForm.reset();
 
@@ -80,7 +113,8 @@ addBtn.addEventListener('click', () => {
 
 closeBtn.addEventListener('click', () => {
     modalOverlay.classList.remove('active');
-});
+});
+
 settingsBtn.addEventListener('click', () => {
     renderSettingsCategoryList();
     categoryModalOverlay.classList.add('active');
@@ -88,10 +122,12 @@ settingsBtn.addEventListener('click', () => {
 
 categoryCloseBtn.addEventListener('click', () => {
     categoryModalOverlay.classList.remove('active');
-});
+});
+
 editCloseBtn.addEventListener('click', () => {
     editModalOverlay.classList.remove('active');
-});
+});
+
 tabMonthly.addEventListener('click', () => {
     currentViewMode = 'monthly';
     tabMonthly.classList.add('active');
@@ -108,7 +144,8 @@ tabYearly.addEventListener('click', () => {
     yearlyView.style.display = 'block';
     monthlyView.style.display = 'none';
     renderList(); // リストの表示内容も切り替え
-});
+});
+
 window.addEventListener('click', (e) => {
     if (e.target === modalOverlay) {
         modalOverlay.classList.remove('active');
@@ -119,7 +156,8 @@ window.addEventListener('click', (e) => {
     if (e.target === editModalOverlay) {
         editModalOverlay.classList.remove('active');
     }
-});
+});
+
 subForm.addEventListener('submit', (e) => {
     e.preventDefault();
 
@@ -138,7 +176,8 @@ subForm.addEventListener('submit', (e) => {
     updateDashboard();
 
     modalOverlay.classList.remove('active');
-});
+});
+
 editForm.addEventListener('submit', (e) => {
     e.preventDefault();
 
@@ -169,12 +208,14 @@ editForm.addEventListener('submit', (e) => {
     updateDashboard();
 
     editModalOverlay.classList.remove('active');
-});
+});
+
 categoryAddForm.addEventListener('submit', (e) => {
     e.preventDefault();
     const nameInput = document.getElementById('newCategoryName');
     const newName = nameInput.value.trim();
-    if (!newName) return;
+    if (!newName) return;
+
     const randomColor = catColors[Math.floor(Math.random() * catColors.length)];
     const newCat = {
         id: 'cat_' + Date.now(),
@@ -184,19 +225,23 @@ categoryAddForm.addEventListener('submit', (e) => {
     };
 
     categories.push(newCat);
-    saveCategories();
+    saveCategories();
+
     nameInput.value = '';
     renderSettingsCategoryList();
     renderCategorySelect();
     renderList(); // リストのアイコン色等もリセット対策で再描画
-});
-function deleteCategory(catId) {
+});
+
+function deleteCategory(catId) {
+
     if (defaultCategories.find(c => c.id === catId)) {
         alert("デフォルトのカテゴリは削除できません。");
         return;
     }
 
-    if (confirm("このカテゴリを削除しますか？\n(既にこのカテゴリを使っているサブスクは「その他」に変更されます)")) {
+    if (confirm("このカテゴリを削除しますか？\n(既にこのカテゴリを使っているサブスクは「その他」に変更されます)")) {
+
         subscriptions = subscriptions.map(sub => {
             if (sub.category === catId) {
                 return { ...sub, category: 'other' };
@@ -213,7 +258,8 @@ function deleteCategory(catId) {
         renderList();
         updateDashboard();
     }
-}
+}
+
 function renderCategorySelect() {
     subCategorySelect.innerHTML = '';
     editSubCategorySelect.innerHTML = ''; // 編集用も同時に更新
@@ -229,14 +275,16 @@ function renderCategorySelect() {
         option2.textContent = cat.name;
         editSubCategorySelect.appendChild(option2);
     });
-}
+}
+
 function renderSettingsCategoryList() {
     settingsCategoryList.innerHTML = '';
     categories.forEach(cat => {
         const li = document.createElement('li');
         li.className = 'category-list-item';
 
-        let delBtnHtml = '';
+        let delBtnHtml = '';
+
         if (!defaultCategories.find(c => c.id === cat.id)) {
             delBtnHtml = `<button type="button" class="del-cat-btn" onclick="deleteCategory('${cat.id}')" title="削除"><i class="fas fa-trash"></i></button>`;
         } else {
@@ -249,7 +297,8 @@ function renderSettingsCategoryList() {
         `;
         settingsCategoryList.appendChild(li);
     });
-}
+}
+
 function updateDashboard() {
     let monthlySum = 0;
     let yearlySum = 0;
@@ -262,13 +311,15 @@ function updateDashboard() {
             monthlySum += Math.round(sub.price / 12);
             yearlySum += sub.price;
         }
-    });
+    });
+
     monthlyTotalEl.textContent = monthlySum.toLocaleString();
     yearlyTotalEl.textContent = yearlySum.toLocaleString();
 
     yearlyEstimateFromMonthly.textContent = '¥' + yearlySum.toLocaleString();
     monthlyEstimateFromYearly.textContent = '¥' + monthlySum.toLocaleString();
-}
+}
+
 function calculateDaysUntil(dateString) {
     const targetDate = new Date(dateString);
     targetDate.setHours(0, 0, 0, 0); // 時間をリセットして純粋な日付比較にする
@@ -280,16 +331,19 @@ function calculateDaysUntil(dateString) {
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
     return diffDays;
-}
+}
+
 function formatDate(dateString) {
     const d = new Date(dateString);
     return `${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getDate()).padStart(2, '0')}`;
-}
+}
+
 function customConfirm(title, message) {
     return new Promise((resolve) => {
         confirmTitle.textContent = title;
         confirmMessage.innerHTML = message.replace(/\n/g, '<br>');
-        confirmModalOverlay.classList.add('active');
+        confirmModalOverlay.classList.add('active');
+
         const onOk = () => {
             cleanup();
             resolve(true);
@@ -308,7 +362,8 @@ function customConfirm(title, message) {
         confirmOkBtn.addEventListener('click', onOk);
         confirmCancelBtn.addEventListener('click', onCancel);
     });
-}
+}
+
 function editSub(id) {
     const sub = subscriptions.find(s => s.id === id);
     if (!sub) return;
@@ -321,26 +376,31 @@ function editSub(id) {
     document.getElementById('editSubCategory').value = sub.category;
 
     editModalOverlay.classList.add('active');
-}
+}
+
 async function completeSub(id) {
     const sub = subscriptions.find(s => s.id === id);
-    if (!sub) return;
+    if (!sub) return;
+
     const isConfirmed = await customConfirm(
         '支払完了の確認',
         `「${sub.name}」の支払いを完了し、\n次回の支払日に更新しますか？`
     );
 
-    if (!isConfirmed) return;
+    if (!isConfirmed) return;
+
     const currentDate = new Date(sub.nextDate);
     const targetDay = currentDate.getDate();
 
     if (sub.cycle === 'monthly') {
-        currentDate.setMonth(currentDate.getMonth() + 1);
+        currentDate.setMonth(currentDate.getMonth() + 1);
+
         if (currentDate.getDate() !== targetDay) {
             currentDate.setDate(0); // その月の最終日にセット
         }
     } else if (sub.cycle === 'yearly') {
-        currentDate.setFullYear(currentDate.getFullYear() + 1);
+        currentDate.setFullYear(currentDate.getFullYear() + 1);
+
         if (currentDate.getDate() !== targetDay) {
             currentDate.setDate(0);
         }
@@ -358,7 +418,8 @@ async function completeSub(id) {
     saveData();
     renderList();
     updateDashboard();
-}
+}
+
 async function deleteSub(id) {
     const isConfirmed = await customConfirm('削除の確認', 'このサブスクリプションを削除してもよろしいですか？');
     if (isConfirmed) {
@@ -367,7 +428,8 @@ async function deleteSub(id) {
         renderList();
         updateDashboard();
     }
-}
+}
+
 function escapeHTML(str) {
     if (!str) return '';
     return str.replace(/[&<>'"]/g,
@@ -379,15 +441,18 @@ function escapeHTML(str) {
             '"': '&quot;'
         }[tag] || tag)
     );
-}
-function renderList() {
+}
+
+function renderList() {
+
     const items = subList.querySelectorAll('.sub-item');
     items.forEach(item => item.remove());
 
     if (subscriptions.length === 0) {
         emptyState.style.display = 'block';
         return;
-    }
+    }
+
     let targetSubs = [...subscriptions].sort((a, b) => new Date(a.nextDate) - new Date(b.nextDate));
     targetSubs = targetSubs.filter(sub => sub.cycle === currentViewMode);
 
@@ -398,7 +463,8 @@ function renderList() {
 
     emptyState.style.display = 'none';
 
-    targetSubs.forEach(sub => {
+    targetSubs.forEach(sub => {
+
         const catInfo = categories.find(c => c.id === sub.category) || defaultCategories.find(c => c.id === 'other');
 
         const style = { bgColor: catInfo.bgColor, icon: catInfo.icon };
@@ -449,5 +515,6 @@ function renderList() {
 
         subList.appendChild(li);
     });
-}
+}
+
 init();
