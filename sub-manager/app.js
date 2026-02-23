@@ -502,6 +502,13 @@ END:VCALENDAR`;
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+
+    // Android端末の場合、ダウンロード後に開くよう案内を出す
+    if (/Android/i.test(navigator.userAgent)) {
+        setTimeout(() => {
+            alert("カレンダー用ファイル(.ics)をダウンロードしました。\\n画面上部の通知バー、またはダウンロード履歴からファイルを開いてカレンダーに追加してください。");
+        }, 500);
+    }
 }
 
 function renderList() {
