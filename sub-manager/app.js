@@ -443,6 +443,67 @@ function escapeHTML(str) {
     );
 }
 
+// iCalendar（.ics）ファイルの生成とダウンロード処理
+function downloadCalendarEvent(id) {
+    const sub = subscriptions.find(s => s.id === id);
+    if (!sub) return;
+
+    const eventDate = new Date(sub.nextDate);
+    // 終日イベントとして扱うため、YYYYMMDD形式にする
+    const yyyy = eventDate.getFullYear();
+    const mm = String(eventDate.getMonth() + 1).padStart(2, '0');
+    const dd = String(eventDate.getDate()).padStart(2, '0');
+    const dtstart = `${yyyy}${mm}${dd}`;
+
+    // 翌日を終了日にする（終日イベントのお作法）
+    const nextDay = new Date(eventDate);
+    nextDay.setDate(nextDay.getDate() + 1);
+    const endYyyy = nextDay.getFullYear();
+    const endMm = String(nextDay.getMonth() + 1).padStart(2, '0');
+    const endDd = String(nextDay.getDate()).padStart(2, '0');
+    const dtend = `${endYyyy}${endMm}${endDd}`;
+
+    // スマホ通知用のアラーム設定（イベントの1日前の午前9時を想定）
+    // -P1DT9H = 1日前のマイナス9時間（UTC基準の場合等）
+    // 今回はシンプルに「1日前の通知 (-P1D)」を設定
+    const alarmDescription = `【支払日リマインド】${sub.name}`;
+
+    // 現在時刻（生成日時）
+    const now = new Date();
+    const dtstamp = now.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+    const uid = `${now.getTime()}@submanager`;
+
+    const icsContent = `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//SubManager//Next Payment Notification//JP
+CALSCALE:GREGORIAN
+BEGIN:VEVENT
+UID:${uid}
+DTSTAMP:${dtstamp}
+DTSTART;VALUE=DATE:${dtstart}
+DTEND;VALUE=DATE:${dtend}
+SUMMARY:【更新】${sub.name} の支払い
+DESCRIPTION:サブスクリプション「${sub.name}」の次回更新日です。\\n金額: ¥${sub.price.toLocaleString()}\\n※SubManagerからの自動登録イベントです。
+BEGIN:VALARM
+TRIGGER:-P1D
+ACTION:DISPLAY
+DESCRIPTION:${alarmDescription}
+END:VALARM
+END:VEVENT
+END:VCALENDAR`;
+
+    // ファイルとしてダウンロードさせる
+    const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `payment_${dtstart}_${sub.name}.ics`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+
 function renderList() {
 
     const items = subList.querySelectorAll('.sub-item');
@@ -506,6 +567,7 @@ function renderList() {
                 <div class="sub-price">¥${sub.price.toLocaleString()}<span style="font-size:0.8rem; font-weight:normal;">${cycleText}</span></div>
                 <div class="sub-next-date ${isWarning ? 'warning-text' : ''}">${daysText}</div>
                 <div class="sub-actions">
+                    <button class="action-btn notify" onclick="downloadCalendarEvent('${sub.id}')" title="カレンダーに通知を登録"><i class="fas fa-bell"></i></button>
                     <button class="action-btn" onclick="editSub('${sub.id}')" title="編集"><i class="fas fa-pen"></i></button>
                     ${isWarning ? `<button class="action-btn complete" onclick="completeSub('${sub.id}')" title="支払済にして更新"><i class="fas fa-check"></i> 支払済</button>` : ''}
                     <button class="action-btn del" onclick="deleteSub('${sub.id}')" title="削除"><i class="fas fa-trash"></i></button>
