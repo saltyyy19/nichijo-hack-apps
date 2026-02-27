@@ -470,6 +470,40 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 /* =========================================
+   Footer (Terms, Privacy Policy)
+   ========================================= */
+.site-footer {
+    text-align: center;
+    padding: 20px 0;
+    margin-top: 30px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.footer-links {
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.footer-links a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.footer-links a:hover {
+    color: var(--text-primary);
+}
+
+.separator {
+    color: var(--glass-border);
+}
+
+/* =========================================
    Responsive (Mobile) Layout Adjustments
    ========================================= */
 @media (max-width: 480px) {
