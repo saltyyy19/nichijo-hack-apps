@@ -468,3 +468,91 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .del-cat-btn:hover {
     color: #ff4757;
 }
+
+/* =========================================
+   Responsive (Mobile) Layout Adjustments
+   ========================================= */
+@media (max-width: 480px) {
+    .app-container {
+        padding: 10px;
+    }
+
+    .header h1 {
+        font-size: 1.5rem;
+    }
+
+    .header-actions {
+        gap: 8px;
+    }
+
+    .add-btn {
+        padding: 8px 12px;
+        font-size: 0.9rem;
+    }
+
+    .dashboard {
+        padding: 15px;
+    }
+
+    .total-amount {
+        font-size: 1.8rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* Modal Adjustments */
+    .modal {
+        padding: 20px;
+        margin: 10px;
+        width: calc(100% - 20px);
+    }
+
+    .form-group input,
+    .form-group select {
+        font-size: 1rem;
+        /* Prevent auto-zoom on iOS Safari */
+    }
+
+    /* Subscription Item Adjustments */
+    .sub-item {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 15px;
+        gap: 12px;
+    }
+
+    .sub-info {
+        width: 100%;
+        margin-right: 0;
+    }
+
+    .sub-name {
+        font-size: 1.1rem;
+        word-break: break-word;
+        /* Prevent long names from breaking layout */
+    }
+
+    .sub-meta {
+        flex-wrap: wrap;
+    }
+
+    .sub-amount-group {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+    }
+
+    .sub-price {
+        font-size: 1.2rem;
+    }
+
+    .sub-actions {
+        width: 100%;
+        justify-content: flex-end;
+        margin-top: 5px;
+        border-top: 1px solid var(--glass-border);
+        padding-top: 10px;
+    }
+}
